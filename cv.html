@@ -40,9 +40,10 @@
                     style="background-image:url(&quot;https://avatars.githubusercontent.com/u/47899906?v=4&quot;);">
                 </div>
                 <div class="about-me">
-                    <p><br>Hello there! My name is &nbsp;<strong>Abel Cruz</strong>. Im working as a Software Engineer. &nbsp;Currently
-                        studying IT Engineering.<br></p>
-
+                    <p><br>Hello there! My name is &nbsp;<strong>Abel Cruz</strong>. Software Engineer with 3 years of
+                        experience in backend development, mainly with Typescript. Functional programming and software
+                        architecture lover. &nbsp;Currently
+                        learning blockchain.<br></p>
                 </div>
             </div>
         </section>
@@ -55,10 +56,20 @@
                     <div class="item">
                         <div class="row">
                             <div class="col-6">
-                                <h3>SSR Software Engineer</h3>
-                                <h4 class="organization">Freelance</h4>
+                                <h3>Software Engineer</h3>
+                                <h4 class="organization">Pomelo</h4>
                             </div>
-                            <div class="col-md-6"><span class="period">11/2021 - PRESENT</span></div>
+                            <div class="col-md-6"><span class="period">05/2021 - PRESENT</span></div>
+                        </div>
+                        <p class="text-muted">Stack: NestJS, DDD, TDD, AWS.</p>
+                    </div>
+                    <div class="item">
+                        <div class="row">
+                            <div class="col-6">
+                                <h3>SSR Software Engineer</h3>
+                                <h4 class="organization">Naranja x</h4>
+                            </div>
+                            <div class="col-md-6"><span class="period">11/2021 - 04/2022</span></div>
                         </div>
                         <p class="text-muted">Working with Naranja X, Argentina's leading credit card issuer, to drive
                             financial inclusion
@@ -69,7 +80,7 @@
                         <p class="text-muted">- Branch of the future, a new management system that generates a
                             completely personalized customer
                             service experience</p>
-                            <p class="text-muted">Backend: NodeJS, Java, Python, AWS.</p>
+                        <p class="text-muted">Backend: NodeJS, Java, Python, AWS.</p>
                     </div>
 
                     <div class="item">
@@ -85,7 +96,8 @@
                         </p>
 
                         <p class="text-muted">Backend: NodeJS, C#, Python, Azure.</p>
-                        <p class="text-muted">Frontend: React.</p></p>
+                        <p class="text-muted">Frontend: React.</p>
+                        </p>
                     </div>
                     <div class="item">
                         <div class="row">
@@ -95,16 +107,17 @@
                             </div>
                             <div class="col-md-6"><span class="period">11/2019 - 05/2021</span></div>
                         </div>
-                        <p class="text-muted">Web application development, api rest, frontend layout, backend structure design, object
+                        <p class="text-muted">Web application development, api rest, frontend layout, backend structure
+                            design, object
                             serialization, data, api documentation.</p>
                         <p class="text-muted"> DDBB: MS SQL Server, MongoDB</p>
                         <p class="text-muted">Architecture: MVC,FLUX, ONION</p>
                         <p class="text-muted">Languages: C# /NET Core , NodeJS, Typescript/ React.</p>
-                        </div>
+                    </div>
                     <div class="item">
                         <div class="row">
                             <div class="col-6">
-                                <h3>Microcontroller Developer &amp; PCB Designer</h3>
+                                <h3>Embedded Software Developer &amp; PCB Designer</h3>
                                 <h4 class="organization">Freelance</h4>
                             </div>
                             <div class="col-md-6"><span class="period">09/2018 - 04/2019</span></div>
@@ -215,20 +228,8 @@
                     <div class="contact-info portfolio-info-card">
                         <h2>Contact Info</h2>
                         <div class="row">
-                            <div class="col-1"><i class="icon ion-android-calendar icon"></i></div>
-                            <div class="col-9"><span>24/01/1997</span></div>
-                        </div>
-                        <div class="row">
                             <div class="col-1"><i class="icon ion-person icon"></i></div>
                             <div class="col-9"><span>Abel Cruz</span></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-1"><i class="icon ion-ios-telephone icon"></i></div>
-                            <div class="col-9"><span>+549 1166556520</span></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-1"><i class="icon ion-at icon"></i></div>
-                            <div class="col-9"><span>abxlcrz@gmail.com</span></div>
                         </div>
                         <div class="row">
                             <div class="col-1"><i class="icon ion-ios-location icon"></i></div>
@@ -245,17 +246,20 @@
                 <h5>Social Networks</h5>
             </div>
             <div class="social-icons">
-                <a href="https://www.facebook.com/abxlcrz"><i class="icon ion-social-facebook "></i></a>
-                <a href="https://www.instagram.com/abxlcrz/"><i class="icon ion-social-instagram-outline"></i></a>
-                <a href="https://twitter.com/abxlcrz"><i class="icon ion-social-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/abelcruzm/" target="_blank"><i
+                        class="icon ion-social-linkedin "></i></a>
+                <a href="https://twitter.com/abxlcrz" target="_blank"><i class="icon ion-social-twitter"></i></a>
+                <a href="https://www.instagram.com/" target="_blank"><i
+                        class="icon ion-social-instagram-outline"></i></a>
             </div>
         </div>
-        <div class=" "><span>© 2020 Copyright:Abel Cruz</span></div>
+        <div class="links "><a href="#">© <span id="year"></span> Copyright: Abel Cruz</a></div>
     </footer>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js"></script>
     <script src="assets/js/script.min.js"></script>
+    <script>document.getElementById("year").innerHTML = new Date().getFullYear();</script>
 </body>
 
 </html>
