@@ -1,10 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist_Mono } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const geistMono = Geist_Mono({ subsets: ["latin"] })
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Terminal Portfolio",
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistMono.className} font-mono antialiased`}>
+      <body className={`${jetbrainsMono.className} font-mono antialiased`}>
         {children}
         <Analytics />
       </body>

@@ -1,12 +1,48 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import { Card } from "@/components/ui/card"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import { Card } from "@/components/ui/card";
 
 type CommandOutput = {
-  command: string
-  output: string | React.ReactNode
+  command: string;
+  output: string | React.ReactNode;
+};
+
+type BatchContent = {
+  type: "batch";
+  content: string[];
+};
+
+function BatchLoader({ content }: { content: string[] }) {
+  const [displayedLines, setDisplayedLines] = useState<string[]>([]);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const batchInterval = setInterval(() => {
+      if (currentIndex < content.length) {
+        setDisplayedLines((prev) => [...prev, content[currentIndex]]);
+        currentIndex++;
+      } else {
+        setIsComplete(true);
+        clearInterval(batchInterval);
+      }
+    }, 200); // Adjust speed here (200ms between lines)
+
+    return () => clearInterval(batchInterval);
+  }, [content]);
+
+  return (
+    <div className="space-y-1">
+      {displayedLines.map((line, index) => (
+        <div key={index} className="text-muted-foreground">
+          {line}
+        </div>
+      ))}
+      {!isComplete && <div className="text-primary animate-pulse">▊</div>}
+    </div>
+  );
 }
 
 const BOOT_SEQUENCE = [
@@ -14,7 +50,7 @@ const BOOT_SEQUENCE = [
   "[KERNEL] Loading core modules... [OK]",
   "[MEMORY] Allocating 2048MB RAM... [OK]",
   "[DISK] Mounting encrypted file systems... [OK]",
-  "[NET] Establishing network protocols... [OK]",
+  "[NETWORK] Establishing network protocols... [OK]",
   "[AUTH] Verifying credentials... [OK]",
   "[GPU] Initializing graphics pipeline... [OK]",
   "[USER] Loading profile data... [OK]",
@@ -23,9 +59,9 @@ const BOOT_SEQUENCE = [
   "[SYSTEM] All systems operational.",
   "[ACCESS] Welcome, user.",
   "",
-]
+];
 
-const COMMANDS = {
+const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
   help: `Available commands:
   
   about       - Learn more about me
@@ -36,32 +72,39 @@ const COMMANDS = {
   clear       - Clear the terminal
   help        - Show this help message`,
 
-  about: `Hi, I'm a Full Stack Developer passionate about building elegant web applications.
+  about: {
+    type: "batch",
+    content: [
+      "I'm a product-minded Backend Engineer with over 4 years of experience in backend development, mainly with Typescript, Golang, AWS, Kubernetes, and other infrastructure tools.",
 
-I specialize in React, Next.js, TypeScript, and modern web technologies. 
-I love creating intuitive user experiences and solving complex problems with clean, maintainable code.
+      "Currently open to being part of fintech startups, focused on the end-user and product value.",
+    ],
+  },
 
-When I'm not coding, you can find me exploring new technologies, contributing to open source, or enjoying a good cup of coffee.`,
-
-  skills: `Technical Skills:
-
-Frontend:
-  • React / Next.js
-  • TypeScript / JavaScript
-  • Tailwind CSS
-  • HTML5 / CSS3
-
-Backend:
-  • Node.js
-  • PostgreSQL / MongoDB
-  • REST APIs / GraphQL
-  • Serverless Functions
-
-Tools & Others:
-  • Git / GitHub
-  • Docker
-  • Vercel / AWS
-  • CI/CD`,
+  skills: {
+    type: "batch",
+    content: [
+      "Technical Skills:",
+      "",
+      "Frontend:",
+      "  • React / Next.js",
+      "  • TypeScript / JavaScript",
+      "  • Tailwind CSS",
+      "  • HTML5 / CSS3",
+      "",
+      "Backend:",
+      "  • Node.js",
+      "  • PostgreSQL / MongoDB",
+      "  • REST APIs / GraphQL",
+      "  • Serverless Functions",
+      "",
+      "Tools & Others:",
+      "  • Git / GitHub",
+      "  • Docker",
+      "  • Vercel / AWS",
+      "  • CI/CD",
+    ],
+  },
 
   experience: `Work Experience:
 
@@ -83,55 +126,80 @@ Junior Developer @ WebAgency
   • Learned modern web development practices
   • Contributed to internal tooling and documentation`,
 
-  projects: `Featured Projects:
-
-1. E-Commerce Platform
-   A full-stack e-commerce solution with Stripe integration
-   Tech: Next.js, PostgreSQL, Stripe, Tailwind CSS
-   
-2. Task Management App
-   Real-time collaborative task manager
-   Tech: React, Firebase, TypeScript
-   
-3. Portfolio Generator
-   CLI tool to generate developer portfolios
-   Tech: Node.js, Inquirer, EJS
-   
-4. Weather Dashboard
-   Beautiful weather app with forecasts
-   Tech: Next.js, OpenWeather API, Recharts`,
-
-  contact: `Let's Connect!
-
-Email: your.email@example.com
-GitHub: github.com/yourusername
-LinkedIn: linkedin.com/in/yourusername
-Twitter: @yourusername
-
-Feel free to reach out for collaborations, opportunities, or just to say hi!`,
-}
+  contact: (
+    <div className="space-y-3">
+      <div className="space-y-2">
+        <div>
+          Email:{" "}
+          <a
+            href="mailto:abxlcrz@gmail.com"
+            className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            abxlcrz@gmail.com
+          </a>
+        </div>
+        <div>
+          GitHub:{" "}
+          <a
+            href="https://github.com/abxlcrz"
+            className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            github.com/abxlcrz
+          </a>
+        </div>
+        <div>
+          LinkedIn:{" "}
+          <a
+            href="https://linkedin.com/in/abelcruzm"
+            className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            linkedin.com/in/abelcruzm
+          </a>
+        </div>
+        <div>
+          Twitter:{" "}
+          <a
+            href="https://twitter.com/abxlcrz"
+            className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            @abxlcrz
+          </a>
+        </div>
+      </div>
+      <div className="mt-4 text-muted-foreground">Lets talk</div>
+    </div>
+  ),
+};
 
 export default function Terminal() {
-  const [isBooting, setIsBooting] = useState(true)
-  const [bootMessages, setBootMessages] = useState<string[]>([])
-  const [history, setHistory] = useState<CommandOutput[]>([])
-  const [input, setInput] = useState("")
-  const [commandHistory, setCommandHistory] = useState<string[]>([])
-  const [historyIndex, setHistoryIndex] = useState(-1)
-  const [isGlitching, setIsGlitching] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const terminalRef = useRef<HTMLDivElement>(null)
+  const [isBooting, setIsBooting] = useState(true);
+  const [bootMessages, setBootMessages] = useState<string[]>([]);
+  const [history, setHistory] = useState<CommandOutput[]>([]);
+  const [input, setInput] = useState("");
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [isGlitching, setIsGlitching] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let currentIndex = 0
+    let currentIndex = 0;
     const bootInterval = setInterval(() => {
       if (currentIndex < BOOT_SEQUENCE.length) {
-        setBootMessages((prev) => [...prev, BOOT_SEQUENCE[currentIndex]])
-        currentIndex++
+        setBootMessages((prev) => [...prev, BOOT_SEQUENCE[currentIndex]]);
+        currentIndex++;
       } else {
-        clearInterval(bootInterval)
+        clearInterval(bootInterval);
         setTimeout(() => {
-          setIsBooting(false)
+          setIsBooting(false);
           setHistory([
             {
               command: "",
@@ -141,90 +209,108 @@ export default function Terminal() {
                     &gt;&gt; PORTFOLIO TERMINAL v2.0.1 &lt;&lt;
                   </div>
                   <div className="text-muted-foreground">
-                    Type <span className="text-accent">&apos;help&apos;</span> to see available commands
+                    Type <span className="text-accent">&apos;help&apos;</span>{" "}
+                    to see available commands
                   </div>
                   <div className="text-muted-foreground text-xs">
-                    [System Status: <span className="text-primary">ONLINE</span>]
+                    [System Status: <span className="text-primary">ONLINE</span>
+                    ]
                   </div>
                 </div>
               ),
             },
-          ])
-        }, 200)
+          ]);
+        }, 200);
       }
-    }, 50)
+    }, 50);
 
-    return () => clearInterval(bootInterval)
-  }, [])
+    return () => clearInterval(bootInterval);
+  }, []);
 
   useEffect(() => {
     if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
     }
-  }, [history, bootMessages])
+  }, [history, bootMessages]);
 
   const handleCommand = (cmd: string) => {
-    const trimmedCmd = cmd.trim().toLowerCase()
+    const trimmedCmd = cmd.trim().toLowerCase();
 
-    if (trimmedCmd === "") return
+    if (trimmedCmd === "") return;
 
-    let output: string | React.ReactNode = ""
+    let output: string | React.ReactNode = "";
 
     if (trimmedCmd === "clear") {
-      setIsGlitching(true)
+      setIsGlitching(true);
       setTimeout(() => {
-        setHistory([])
-        setIsGlitching(false)
-      }, 150)
-      return
+        setHistory([]);
+        setIsGlitching(false);
+      }, 150);
+      return;
     }
 
     if (trimmedCmd in COMMANDS) {
-      output = COMMANDS[trimmedCmd as keyof typeof COMMANDS]
+      const commandOutput = COMMANDS[trimmedCmd as keyof typeof COMMANDS];
+      if (
+        commandOutput &&
+        typeof commandOutput === "object" &&
+        "type" in commandOutput &&
+        commandOutput.type === "batch"
+      ) {
+        output = (
+          <BatchLoader content={(commandOutput as BatchContent).content} />
+        );
+      } else {
+        output = commandOutput as string | React.ReactNode;
+      }
     } else {
       output = (
         <div>
-          <span className="text-destructive glitch-text">ERROR:</span> Command not found:{" "}
-          <span className="text-destructive">{trimmedCmd}</span>
+          <span className="text-destructive glitch-text">ERROR:</span> Command
+          not found: <span className="text-destructive">{trimmedCmd}</span>
           <br />
-          Type <span className="text-accent">&apos;help&apos;</span> for available commands
+          Type <span className="text-accent">&apos;help&apos;</span> for
+          available commands
         </div>
-      )
+      );
     }
 
-    setHistory((prev) => [...prev, { command: cmd, output }])
-    setCommandHistory((prev) => [...prev, cmd])
-    setHistoryIndex(-1)
-  }
+    setHistory((prev) => [...prev, { command: cmd, output }]);
+    setCommandHistory((prev) => [...prev, cmd]);
+    setHistoryIndex(-1);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    handleCommand(input)
-    setInput("")
-  }
+    e.preventDefault();
+    handleCommand(input);
+    setInput("");
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowUp") {
-      e.preventDefault()
+      e.preventDefault();
       if (commandHistory.length > 0) {
-        const newIndex = historyIndex === -1 ? commandHistory.length - 1 : Math.max(0, historyIndex - 1)
-        setHistoryIndex(newIndex)
-        setInput(commandHistory[newIndex])
+        const newIndex =
+          historyIndex === -1
+            ? commandHistory.length - 1
+            : Math.max(0, historyIndex - 1);
+        setHistoryIndex(newIndex);
+        setInput(commandHistory[newIndex]);
       }
     } else if (e.key === "ArrowDown") {
-      e.preventDefault()
+      e.preventDefault();
       if (historyIndex !== -1) {
-        const newIndex = historyIndex + 1
+        const newIndex = historyIndex + 1;
         if (newIndex >= commandHistory.length) {
-          setHistoryIndex(-1)
-          setInput("")
+          setHistoryIndex(-1);
+          setInput("");
         } else {
-          setHistoryIndex(newIndex)
-          setInput(commandHistory[newIndex])
+          setHistoryIndex(newIndex);
+          setInput(commandHistory[newIndex]);
         }
       }
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-4xl h-[600px] bg-card border-border shadow-2xl overflow-hidden flex flex-col scanline">
@@ -234,18 +320,27 @@ export default function Terminal() {
           <div className="w-3 h-3 rounded-full bg-muted" />
           <div className="w-3 h-3 rounded-full bg-primary" />
         </div>
-        <div className="text-sm text-primary ml-4 font-mono">root@portfolio:~#</div>
+        <div className="text-sm text-primary ml-4 font-mono">
+          root@portfolio:~#
+        </div>
       </div>
 
       <div
         ref={terminalRef}
-        className={`flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm ${isGlitching ? "glitch" : ""}`}
+        className={`flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm ${
+          isGlitching ? "glitch" : ""
+        }`}
         onClick={() => !isBooting && inputRef.current?.focus()}
       >
         {isBooting ? (
           <div className="space-y-1">
             {bootMessages.map((message, index) => (
-              <div key={index} className={`text-primary ${index % 3 === 0 ? "glitch-text" : ""}`}>
+              <div
+                key={index}
+                className={`text-primary ${
+                  index % 3 === 0 ? "glitch-text" : ""
+                }`}
+              >
                 {message}
               </div>
             ))}
@@ -261,7 +356,9 @@ export default function Terminal() {
                     <span className="text-foreground">{item.command}</span>
                   </div>
                 )}
-                <div className="text-muted-foreground whitespace-pre-wrap pl-4">{item.output}</div>
+                <div className="text-muted-foreground whitespace-pre-wrap pl-4">
+                  {item.output}
+                </div>
               </div>
             ))}
 
@@ -286,5 +383,5 @@ export default function Terminal() {
         )}
       </div>
     </Card>
-  )
+  );
 }

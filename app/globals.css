@@ -239,3 +239,56 @@
 .cursor-blink {
   animation: blink 0.8s step-end infinite;
 }
+
+/* Black scrollbars */
+* {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #000000 #000000; /* Firefox - thumb and track */
+}
+
+*::-webkit-scrollbar {
+  width: 8px; /* Safari and Chrome */
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #000000; /* Track color */
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #333333; /* Thumb color - slightly lighter for visibility */
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #444444; /* Hover state */
+}
+
+/* Ensure body and html use black scrollbars */
+html,
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #000000;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: #444444;
+}
