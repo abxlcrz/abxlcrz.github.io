@@ -61,6 +61,62 @@ const BOOT_SEQUENCE = [
   "",
 ];
 
+// AI Chat function to detect prompts and generate responses
+const isPromptLike = (input: string): boolean => {
+  const promptIndicators = [
+    'what', 'how', 'why', 'can you', 'could you', 'would you', 'do you',
+    'explain', 'tell me', 'describe', 'help me', 'generate', 'create',
+    'write', 'make', 'build', 'show me', 'give me', 'teach me'
+  ];
+  
+  const lowerInput = input.toLowerCase();
+  return promptIndicators.some(indicator => lowerInput.includes(indicator)) && 
+         input.length > 10 && 
+         input.includes(' ');
+};
+
+const generateAIResponse = async (prompt: string): Promise<BatchContent> => {
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get AI response');
+    }
+
+    const data = await response.json();
+    
+    if (data.success && data.response) {
+      return {
+        type: "batch",
+        content: [
+          "🤖 AI Assistant:",
+          "",
+          ...data.response
+        ]
+      };
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error) {
+    console.error('AI Response Error:', error);
+    return {
+      type: "batch", 
+      content: [
+        "🤖 AI Assistant:",
+        "",
+        "I'm sorry, I'm having trouble connecting to my AI brain right now. 🧠",
+        "Try asking me again in a moment, or check out my other commands with 'help'!"
+      ]
+    };
+  }
+};
+
 const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
   help: `Available commands:
   
@@ -70,7 +126,12 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
   projects    - Browse my projects
   contact     - Get in touch
   clear       - Clear the terminal
-  help        - Show this help message`,
+  help        - Show this help message
+  
+  💡 AI Chat: Ask me anything! Just type a question or prompt
+     Examples: "How do you design scalable APIs?"
+              "Tell me about fintech architecture"
+              "What's your experience with startups?"`,
 
   about: {
     type: "batch",
@@ -239,7 +300,7 @@ export default function Terminal() {
     }
   }, [history, bootMessages]);
 
-  const handleCommand = (cmd: string) => {
+  const handleCommand = async (cmd: string) => {
     const trimmedCmd = cmd.trim().toLowerCase();
 
     if (trimmedCmd === "") return;
@@ -269,6 +330,44 @@ export default function Terminal() {
       } else {
         output = commandOutput as string | React.ReactNode;
       }
+    } else if (isPromptLike(cmd)) {
+      // Show loading indicator first
+      const loadingOutput = (
+        <div className="space-y-2">
+          <div className="text-accent">🤖 AI Assistant:</div>
+          <div className="text-muted-foreground">Thinking... <span className="animate-pulse">▊</span></div>
+        </div>
+      );
+      
+      // Add loading message to history first
+      setHistory((prev) => [...prev, { command: cmd, output: loadingOutput }]);
+      setCommandHistory((prev) => [...prev, cmd]);
+      setHistoryIndex(-1);
+
+      // Get AI response and update the last entry
+      try {
+        const aiResponse = await generateAIResponse(cmd);
+        const aiOutput = <BatchLoader content={aiResponse.content} />;
+        
+        setHistory((prev) => {
+          const newHistory = [...prev];
+          newHistory[newHistory.length - 1] = { command: cmd, output: aiOutput };
+          return newHistory;
+        });
+      } catch (error) {
+        const errorOutput = (
+          <div className="space-y-2">
+            <div className="text-accent">🤖 AI Assistant:</div>
+            <div className="text-destructive">Sorry, I'm having trouble right now. Try again later!</div>
+          </div>
+        );
+        setHistory((prev) => {
+          const newHistory = [...prev];
+          newHistory[newHistory.length - 1] = { command: cmd, output: errorOutput };
+          return newHistory;
+        });
+      }
+      return;
     } else {
       output = (
         <div>
@@ -276,7 +375,7 @@ export default function Terminal() {
           not found: <span className="text-destructive">{trimmedCmd}</span>
           <br />
           Type <span className="text-accent">&apos;help&apos;</span> for
-          available commands
+          available commands or ask me a question!
         </div>
       );
     }
