@@ -75,46 +75,108 @@ const isPromptLike = (input: string): boolean => {
          input.includes(' ');
 };
 
-const generateAIResponse = async (prompt: string): Promise<BatchContent> => {
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to get AI response');
-    }
-
-    const data = await response.json();
-    
-    if (data.success && data.response) {
-      return {
-        type: "batch",
-        content: [
-          "🤖 AI Assistant:",
-          "",
-          ...data.response
-        ]
-      };
-    } else {
-      throw new Error('Invalid response format');
-    }
-  } catch (error) {
-    console.error('AI Response Error:', error);
+const generateAIResponse = (prompt: string): BatchContent => {
+  // Simple rule-based responses based on keywords using batch loader
+  const lowerPrompt = prompt.toLowerCase();
+  
+  if (lowerPrompt.includes('backend') || lowerPrompt.includes('server') || lowerPrompt.includes('api')) {
     return {
-      type: "batch", 
+      type: "batch",
       content: [
         "🤖 AI Assistant:",
         "",
-        "I'm sorry, I'm having trouble connecting to my AI brain right now. 🧠",
-        "Try asking me again in a moment, or check out my other commands with 'help'!"
+        "Based on my experience as a Backend Engineer, I can help with backend architecture, API design, microservices, and cloud infrastructure.",
+        "",
+        "I've worked with TypeScript, Golang, AWS, and Kubernetes in fintech environments.",
+        "",
+        "What specific backend challenge are you facing?"
       ]
     };
   }
+  
+  if (lowerPrompt.includes('fintech') || lowerPrompt.includes('finance') || lowerPrompt.includes('payment')) {
+    return {
+      type: "batch",
+      content: [
+        "🤖 AI Assistant:",
+        "",
+        "I have extensive fintech experience working at Pomelo and Naranja X.",
+        "",
+        "My focus areas include:",
+        "• Card issuance systems", 
+        "• KYC governmental validation",
+        "• Payment infrastructure",
+        "• Regulatory compliance",
+        "• Loans and payments",
+        "",
+        "I've built scalable systems that handle financial transactions and meet regulatory standards.",
+        "",
+        "How can I help with your fintech project?"
+      ]
+    };
+  }
+  
+  if (lowerPrompt.includes('career') || lowerPrompt.includes('job') || lowerPrompt.includes('advice')) {
+    return {
+      type: "batch",
+      content: [
+        "🤖 AI Assistant:",
+        "",
+        "As a Backend Engineer with 4+ years in fintech, here's what I've learned:",
+        "",
+        "Key principles:",
+        "• Focus on product impact and user value",
+        "• Understand business requirements deeply",
+        "• Build scalable architecture from day one",
+        "• Always consider regulatory compliance in fintech",
+        "",
+        "My journey: Naranja X → Pomelo → Founding Engineer at stealth startup",
+        "",
+        "What career aspect interests you?"
+      ]
+    };
+  }
+  
+  if (lowerPrompt.includes('startup') || lowerPrompt.includes('founding') || lowerPrompt.includes('entrepreneur')) {
+    return {
+      type: "batch",
+      content: [
+        "🤖 AI Assistant:",
+        "",
+        "Currently working as a Founding Engineer at a stealth EdTech startup.",
+        "",
+        "Key lessons from startup experience:",
+        "• Start with modular monolith for rapid iteration",
+        "• Use Infrastructure as Code (IaC) for reliability", 
+        "• Align technical decisions with product strategy",
+        "• MVP development should focus on core user value",
+        "",
+        "The experience involves wearing multiple hats - from AWS infrastructure setup to product development.",
+        "",
+        "What startup challenge can I help with?"
+      ]
+    };
+  }
+  
+  // Generic response for other prompts
+  return {
+    type: "batch",
+    content: [
+      "🤖 AI Assistant:",
+      "",
+      "I'm Abel's AI assistant! I can chat about:",
+      "",
+      "Technical topics:",
+      "• Backend engineering & architecture",
+      "• Fintech systems & payments", 
+      "• Startup & product development",
+      "• AWS & cloud infrastructure",
+      "",
+      "I have context about Abel's 4+ years in backend development and fintech.",
+      "",
+      "Try asking about specific technical topics or career advice!"
+    ]
+  };
 };
 
 const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
@@ -300,7 +362,7 @@ export default function Terminal() {
     }
   }, [history, bootMessages]);
 
-  const handleCommand = async (cmd: string) => {
+  const handleCommand = (cmd: string) => {
     const trimmedCmd = cmd.trim().toLowerCase();
 
     if (trimmedCmd === "") return;
@@ -331,43 +393,9 @@ export default function Terminal() {
         output = commandOutput as string | React.ReactNode;
       }
     } else if (isPromptLike(cmd)) {
-      // Show loading indicator first
-      const loadingOutput = (
-        <div className="space-y-2">
-          <div className="text-accent">🤖 AI Assistant:</div>
-          <div className="text-muted-foreground">Thinking... <span className="animate-pulse">▊</span></div>
-        </div>
-      );
-      
-      // Add loading message to history first
-      setHistory((prev) => [...prev, { command: cmd, output: loadingOutput }]);
-      setCommandHistory((prev) => [...prev, cmd]);
-      setHistoryIndex(-1);
-
-      // Get AI response and update the last entry
-      try {
-        const aiResponse = await generateAIResponse(cmd);
-        const aiOutput = <BatchLoader content={aiResponse.content} />;
-        
-        setHistory((prev) => {
-          const newHistory = [...prev];
-          newHistory[newHistory.length - 1] = { command: cmd, output: aiOutput };
-          return newHistory;
-        });
-      } catch (error) {
-        const errorOutput = (
-          <div className="space-y-2">
-            <div className="text-accent">🤖 AI Assistant:</div>
-            <div className="text-destructive">Sorry, I'm having trouble right now. Try again later!</div>
-          </div>
-        );
-        setHistory((prev) => {
-          const newHistory = [...prev];
-          newHistory[newHistory.length - 1] = { command: cmd, output: errorOutput };
-          return newHistory;
-        });
-      }
-      return;
+      // AI Chat functionality - respond to prompt-like inputs with batch loader
+      const aiResponse = generateAIResponse(cmd);
+      output = <BatchLoader content={aiResponse.content} />;
     } else {
       output = (
         <div>
