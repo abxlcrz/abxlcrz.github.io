@@ -292,3 +292,17 @@ html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover {
   background: #444444;
 }
+
+/* Classic terminal cursor blink */
+@keyframes classic-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  animation: classic-blink 1s infinite;
+}

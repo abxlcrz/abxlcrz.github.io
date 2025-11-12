@@ -14,7 +14,11 @@ type BatchContent = {
   content: string[];
 };
 
-function BatchLoader({ content }: { content: string[] }) {
+interface BatchLoaderProps {
+  content: string[];
+}
+
+const BatchLoader: React.FC<BatchLoaderProps> = ({ content }) => {
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
 
@@ -36,8 +40,8 @@ function BatchLoader({ content }: { content: string[] }) {
   return (
     <div className="space-y-1">
       {displayedLines.map((line, index) => (
-        <div key={index} className="text-muted-foreground">
-          {line}
+        <div key={index} className="text-muted-foreground min-h-5">
+          {line || '\u00A0'}
         </div>
       ))}
       {!isComplete && <div className="text-primary animate-pulse">▊</div>}
@@ -199,7 +203,7 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
     type: "batch",
     content: [
       "I'm a product-minded Backend Engineer with over 4 years of experience in backend development, mainly with Typescript, Golang, AWS, Kubernetes, and other infrastructure tools.",
-
+      "",
       "Currently open to being part of fintech startups, focused on the end-user and product value.",
     ],
   },
@@ -320,6 +324,7 @@ export default function Terminal() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isGlitching, setIsGlitching] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
 
@@ -355,12 +360,6 @@ export default function Terminal() {
 
     return () => clearInterval(bootInterval);
   }, []);
-
-  useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
-    }
-  }, [history, bootMessages]);
 
   const handleCommand = (cmd: string) => {
     const trimmedCmd = cmd.trim().toLowerCase();
@@ -419,6 +418,19 @@ export default function Terminal() {
     setInput("");
   };
 
+  // Update cursor position when input changes
+  useEffect(() => {
+    if (inputRef.current) {
+      setCursorPosition(inputRef.current.selectionStart || 0);
+    }
+  }, [input]);
+
+  const updateCursorPosition = () => {
+    if (inputRef.current) {
+      setCursorPosition(inputRef.current.selectionStart || 0);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowUp") {
       e.preventDefault();
@@ -429,6 +441,12 @@ export default function Terminal() {
             : Math.max(0, historyIndex - 1);
         setHistoryIndex(newIndex);
         setInput(commandHistory[newIndex]);
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.setSelectionRange(commandHistory[newIndex].length, commandHistory[newIndex].length);
+            setCursorPosition(commandHistory[newIndex].length);
+          }
+        }, 0);
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -437,11 +455,21 @@ export default function Terminal() {
         if (newIndex >= commandHistory.length) {
           setHistoryIndex(-1);
           setInput("");
+          setCursorPosition(0);
         } else {
           setHistoryIndex(newIndex);
           setInput(commandHistory[newIndex]);
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.setSelectionRange(commandHistory[newIndex].length, commandHistory[newIndex].length);
+              setCursorPosition(commandHistory[newIndex].length);
+            }
+          }, 0);
         }
       }
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "Home" || e.key === "End") {
+      // Let the default behavior happen, then update cursor position
+      setTimeout(updateCursorPosition, 0);
     }
   };
 
@@ -497,19 +525,31 @@ export default function Terminal() {
 
             <form onSubmit={handleSubmit} className="flex gap-2">
               <span className="text-primary">$</span>
-              <div className="flex-1 flex items-center">
-                <span className="text-primary cursor-blink mr-0.5">█</span>
+              <div className="flex-1 flex items-center relative">
+                <div className="absolute inset-0 flex items-center pointer-events-none font-mono">
+                  <span className="text-foreground">{input}</span>
+                </div>
+                <div className="absolute inset-0 flex items-center pointer-events-none font-mono">
+                  <span className="invisible">
+                    {input.slice(0, cursorPosition)}
+                  </span>
+                  <span className="text-primary cursor-blink">█</span>
+                </div>
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    updateCursorPosition();
+                  }}
                   onKeyDown={handleKeyDown}
-                  className="flex-1 bg-transparent outline-none text-foreground caret-transparent"
+                  onClick={updateCursorPosition}
+                  onKeyUp={updateCursorPosition}
+                  className="flex-1 bg-transparent outline-none text-transparent caret-transparent"
                   autoFocus
                   spellCheck={false}
                 />
-                <span className="text-foreground">{input}</span>
               </div>
             </form>
           </>
