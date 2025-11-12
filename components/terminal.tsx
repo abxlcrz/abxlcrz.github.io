@@ -106,25 +106,35 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
     ],
   },
 
-  experience: `Work Experience:
-
-Senior Frontend Developer @ TechCorp
-2022 - Present
-  • Led development of customer-facing dashboard using Next.js and TypeScript
-  • Improved page load times by 40% through optimization techniques
-  • Mentored junior developers and conducted code reviews
-
-Full Stack Developer @ StartupXYZ
-2020 - 2022
-  • Built and maintained multiple client projects using React and Node.js
-  • Implemented authentication and payment systems
-  • Collaborated with designers to create pixel-perfect UIs
-
-Junior Developer @ WebAgency
-2019 - 2020
-  • Developed responsive websites for various clients
-  • Learned modern web development practices
-  • Contributed to internal tooling and documentation`,
+  experience: {
+    type: "batch",
+    content: [
+      "Work Experience:",
+      "",
+      "Founding Engineer",
+      "Stealth Startup | Aug 2024 - Jun 2025",
+      "  • Collaborated with founding team to design innovative EdTech marketplace",
+      "  • Aligned product strategy with user needs and market requirements", 
+      "  • Implemented secure and scalable AWS infrastructure using IaC",
+      "  • Developed scalable modular monolith MVP for rapid iteration",
+      "",
+      "Backend Engineer", 
+      "Pomelo | Jun 2022 - Dec 2023",
+      "Buenos Aires, Argentina",
+      "  • Enhanced card issuance through SDK with product team collaboration",
+      "  • Designed microservice orchestrator for automated client infrastructure setup",
+      "  • Boosted NPS and reduced client integration time by 75%",
+      "  • Created self-service integration app with sandbox environment",
+      "",
+      "Backend Engineer",
+      "Naranja X | Oct 2021 - May 2022", 
+      "CABA, Argentina",
+      "  • Led KYC governmental data validation increasing successful onboarding by 30%",
+      "  • Implemented scalable microservices with AWS Step Functions and circuit breakers",
+      "  • Worked with AI face recognition and PII data security",
+      "  • Helped company comply with financial institution regulatory standards",
+    ]
+  },
 
   contact: (
     <div className="space-y-3">
@@ -206,15 +216,11 @@ export default function Terminal() {
               output: (
                 <div className="space-y-2">
                   <div className="text-primary font-bold text-lg glitch-text">
-                    &gt;&gt; PORTFOLIO TERMINAL v2.0.1 &lt;&lt;
+                    &gt;&gt; portfolio.sh &lt;&lt;
                   </div>
                   <div className="text-muted-foreground">
                     Type <span className="text-accent">&apos;help&apos;</span>{" "}
                     to see available commands
-                  </div>
-                  <div className="text-muted-foreground text-xs">
-                    [System Status: <span className="text-primary">ONLINE</span>
-                    ]
                   </div>
                 </div>
               ),
@@ -321,7 +327,7 @@ export default function Terminal() {
           <div className="w-3 h-3 rounded-full bg-primary" />
         </div>
         <div className="text-sm text-primary ml-4 font-mono">
-          root@portfolio:~#
+          abxlcrz@portfolio:~#
         </div>
       </div>
 
@@ -365,6 +371,7 @@ export default function Terminal() {
             <form onSubmit={handleSubmit} className="flex gap-2">
               <span className="text-primary">$</span>
               <div className="flex-1 flex items-center">
+                <span className="text-primary cursor-blink mr-0.5">█</span>
                 <input
                   ref={inputRef}
                   type="text"
@@ -376,7 +383,6 @@ export default function Terminal() {
                   spellCheck={false}
                 />
                 <span className="text-foreground">{input}</span>
-                <span className="text-primary cursor-blink ml-0.5">█</span>
               </div>
             </form>
           </>

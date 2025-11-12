@@ -7,9 +7,8 @@ import "./globals.css"
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Terminal Portfolio",
-  description: "Interactive terminal-style portfolio",
-  generator: "v0.app",
+  title: "Abel Cruz Mendez",
+  description: "about me",
 }
 
 export default function RootLayout({
