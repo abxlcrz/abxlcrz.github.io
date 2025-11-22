@@ -11,15 +11,15 @@ type CommandOutput = {
 
 type BatchContent = {
   type: "batch";
-  content: string[];
+  content: (string | React.ReactNode)[];
 };
 
 interface BatchLoaderProps {
-  content: string[];
+  content: (string | React.ReactNode)[];
 }
 
 const BatchLoader: React.FC<BatchLoaderProps> = ({ content }) => {
-  const [displayedLines, setDisplayedLines] = useState<string[]>([]);
+  const [displayedLines, setDisplayedLines] = useState<(string | React.ReactNode)[]>([]);
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
@@ -184,7 +184,7 @@ const generateAIResponse = (prompt: string): BatchContent => {
 };
 
 const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
-  help: `Available commands:
+  help: `💡 Available commands:
   
   about       - Learn more about me
   skills      - View my technical skills
@@ -193,16 +193,12 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
   contact     - Get in touch
   clear       - Clear the terminal
   help        - Show this help message
-  
-  💡 AI Chat: Ask me anything! Just type a question or prompt
-     Examples: "How do you design scalable APIs?"
-              "Tell me about fintech architecture"
-              "What's your experience with startups?"`,
+  `,
 
   about: {
     type: "batch",
     content: [
-      "I'm a product-minded Backend Engineer with over 4 years of experience in backend development, mainly with Typescript, Golang, AWS, Kubernetes, and other infrastructure tools.",
+      "I'm a product-minded Backend Engineer with over 4 years of experience in product development, focused on shape and measure product growth mainly with Typescript, Golang, AWS, Kubernetes, and other infrastructure tools.",
       "",
       "Currently open to being part of fintech startups, focused on the end-user and product value.",
     ],
@@ -217,18 +213,18 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
       "  • React / Next.js",
       "  • TypeScript / JavaScript",
       "  • Tailwind CSS",
-      "  • HTML5 / CSS3",
       "",
       "Backend:",
       "  • Node.js",
-      "  • PostgreSQL / MongoDB",
-      "  • REST APIs / GraphQL",
-      "  • Serverless Functions",
-      "",
-      "Tools & Others:",
-      "  • Git / GitHub",
+      "  • Golang",
+      "  • TypeScript",
+      "  • Microservices / Modular Monoliths",
+      "  • AWS (Lambda, Step Functions, API Gateway)",
+      "  • Serverless Architecture",
       "  • Docker",
-      "  • Vercel / AWS",
+      "  • Kubernetes",
+      "  • OTEL",
+      "  • AWS",
       "  • CI/CD",
     ],
   },
@@ -261,6 +257,51 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
       "  • Worked with AI face recognition and PII data security",
       "  • Helped company comply with financial institution regulatory standards",
     ]
+  },
+
+  projects: {
+    type: "batch",
+    content: [
+      "Projects:",
+      "",
+      "🎨 Interlaken Pro - VS Code Theme Extension  🏔️",
+      "  A professional dark and light theme pair for Visual Studio Code",
+      "  • Dual Theme Support: Dark and light variants",
+      "  • Excellent Syntax Highlighting: Optimized for JS, TS, Go, Python, C++ and more",
+      "  • Professional Design: Clean and modern Swiss-inspired design",
+      "",
+      "  🔗 Links:",
+      <>
+        {"     Marketplace: "}
+        <a
+          href="https://marketplace.visualstudio.com/items?itemName=abxlcrz.interlaken-pro"
+          className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          marketplace.visualstudio.com/items?itemName=abxlcrz.interlaken-pro
+        </a>
+      </>,
+      <>
+        {"     GitHub: "}
+        <a
+          href="https://github.com/abxlcrz/interlaken-pro"
+          className="text-accent hover:text-primary underline decoration-dotted transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          github.com/abxlcrz/interlaken-pro
+        </a>
+      </>,
+      "",
+      "  📦 Installation: Search 'Interlaken Pro' in VS Code Extensions",
+      "",
+      "  🎯 Features:",
+      "     • Consistent color hierarchy for code readability",
+      "     • Eye-strain reduction for long coding sessions", 
+      "     • Support for 10+ programming languages",
+      "     • MIT Licensed open source project",
+    ],
   },
 
   contact: (
@@ -316,7 +357,7 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
   ),
 };
 
-export default function Terminal() {
+function Terminal() {
   const [isBooting, setIsBooting] = useState(true);
   const [bootMessages, setBootMessages] = useState<string[]>([]);
   const [history, setHistory] = useState<CommandOutput[]>([]);
@@ -342,13 +383,30 @@ export default function Terminal() {
             {
               command: "",
               output: (
-                <div className="space-y-2">
-                  <div className="text-primary font-bold text-lg glitch-text">
-                    &gt;&gt; portfolio.sh &lt;&lt;
-                  </div>
-                  <div className="text-muted-foreground">
-                    Type <span className="text-accent">&apos;help&apos;</span>{" "}
-                    to see available commands
+                <div className="space-y-3" suppressHydrationWarning>
+                  <pre className="text-primary font-mono text-xs leading-3 whitespace-pre text-center">
+{`
+  █████╗ ██████╗ ███████╗██╗          ██████╗██████╗ ██╗   ██╗███████╗
+ ██╔══██╗██╔══██╗██╔════╝██║         ██╔════╝██╔══██╗██║   ██║╚══███╔╝
+ ███████║██████╔╝█████╗  ██║         ██║     ██████╔╝██║   ██║  ███╔╝ 
+ ██╔══██║██╔══██╗██╔══╝  ██║         ██║     ██╔══██╗██║   ██║ ███╔╝  
+ ██║  ██║██████╔╝███████╗███████╗    ╚██████╗██║  ██║╚██████╔╝███████╗
+ ╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝     ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+
+      ███╗   ███╗███████╗███╗   ██╗██████╗ ███████╗███████╗
+      ████╗ ████║██╔════╝████╗  ██║██╔══██╗██╔════╝╚══███╔╝
+      ██╔████╔██║█████╗  ██╔██╗ ██║██║  ██║█████╗    ███╔╝ 
+      ██║╚██╔╝██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝   ███╔╝  
+      ██║ ╚═╝ ██║███████╗██║ ╚████║██████╔╝███████╗███████╗
+      ╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚══════╝
+`}
+                  </pre>
+                  <div className="text-primary font-mono text-sm mt-4 mx-auto w-fit">
+                    <div>╭─────────────────────────────── Portfolio CLI ────────────────────────────────╮</div>
+                    <div>│                                                                              │</div>
+                    <div>│                  Type <span className="text-accent">'help'</span> to explore commands and learn more              │</div>
+                    <div>│                                                                              │</div>
+                    <div>╰──────────────────────────────────────────────────────────────────────────────╯</div>
                   </div>
                 </div>
               ),
@@ -475,15 +533,16 @@ export default function Terminal() {
 
   return (
     <Card className="w-full max-w-4xl h-[600px] bg-card border-border shadow-2xl overflow-hidden flex flex-col scanline">
-      <div className="bg-secondary border-b border-border px-4 py-3 flex items-center gap-2">
+      <div className="bg-secondary border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex gap-2">
           <div className="w-3 h-3 rounded-full bg-destructive terminal-flicker" />
           <div className="w-3 h-3 rounded-full bg-muted" />
           <div className="w-3 h-3 rounded-full bg-primary" />
         </div>
-        <div className="text-sm text-primary ml-4 font-mono">
-          abxlcrz@portfolio:~#
+        <div className="text-sm text-muted-foreground font-mono flex-1 text-center">
+          Terminal - 100x80
         </div>
+        <div className="w-16"></div>
       </div>
 
       <div
@@ -517,15 +576,15 @@ export default function Terminal() {
                     <span className="text-foreground">{item.command}</span>
                   </div>
                 )}
-                <div className="text-muted-foreground whitespace-pre-wrap pl-4">
+                <div className="text-muted-foreground whitespace-pre-wrap">
                   {item.output}
                 </div>
               </div>
             ))}
 
             <form onSubmit={handleSubmit} className="flex gap-2">
-              <span className="text-primary">$</span>
-              <div className="flex-1 flex items-center relative">
+              <span className="text-accent font-mono">abxlcrz@portfolio:~$</span>
+              <div className="flex-1 flex items-center relative ml-2">
                 <div className="absolute inset-0 flex items-center pointer-events-none font-mono">
                   <span className="text-foreground">{input}</span>
                 </div>
@@ -558,3 +617,5 @@ export default function Terminal() {
     </Card>
   );
 }
+
+export default Terminal;

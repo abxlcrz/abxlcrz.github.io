@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jetbrainsMono.className} font-mono antialiased`}>
+      <body className={`${jetbrainsMono.className} font-mono antialiased`} suppressHydrationWarning>
         {children}
         <Analytics />
       </body>
