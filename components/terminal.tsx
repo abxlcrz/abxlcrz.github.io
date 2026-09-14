@@ -234,8 +234,8 @@ const COMMANDS: Record<string, string | React.ReactNode | BatchContent> = {
     content: [
       "Work Experience:",
       "",
-      "Founding Engineer",
-      "Stealth Startup | Nov 2024 -  Present",
+      "Backend Engineer",
+      "Naranja X | Nov 2024 -  Present",
       "  • Architected a multi-tenant banner personalization system serving 4M+ daily users with dynamic segmentation capabilities. Reduced response times by 40% through L2 cache-first strategy, directly improving loan conversion rates and customer engagement across digital channels",
       "  • Led end-to-end platform modernization integrating ML loan propensity scoring across 10+ interconnected services, enabling dynamic pricing strategies through controlled A/B testing at scale. The system processes 4M daily predictions with 200ms latency, improving conversion by 15% and generating $500M+ in incremental monthly revenue", 
       "  • Designed and built a real-time credit simulation engine enabling business teams to validate risk assessment rules and pricing strategies 10x faster. This system processes batch simulations that previously took minutes in seconds, accelerating product iteration cycles",
